@@ -1,6 +1,5 @@
-// Update API URLs to match new backend port
-const API_URL = "http://localhost:4000";
-const API_URL_view = "http://localhost:4000/view-students";
+// Base URL of live backend
+const BASE_URL = "https://courseregistration-production.up.railway.app";
 
 // Helper to show notifications
 function showMessage(msg, type = "success") {
@@ -23,7 +22,7 @@ async function registerStudent() {
   }
 
   try {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(`${BASE_URL}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -40,14 +39,14 @@ async function registerStudent() {
 // Load Courses
 async function loadCourses() {
   try {
-    const res = await fetch(`${API_URL}/courses`);
+    const res = await fetch(`${BASE_URL}/courses`);
     const courses = await res.json();
 
     const list = document.getElementById("courseList");
     list.innerHTML = "";
     courses.forEach(c => {
       const li = document.createElement("li");
-      li.textContent = `${c.id}. ${c.course_name} (${c.instructor}) - ${c.credits} credits`;
+      li.textContent = `${c.id}. ${c.course_name} (${c.instructor || "N/A"}) - ${c.credits || "N/A"} credits`;
       list.appendChild(li);
     });
   } catch (err) {
@@ -67,7 +66,7 @@ async function enrollCourse() {
   }
 
   try {
-    const res = await fetch(`${API_URL}/enroll`, {
+    const res = await fetch(`${BASE_URL}/enroll`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ student_id, course_id })
@@ -84,7 +83,7 @@ async function enrollCourse() {
 // View Registrations
 async function viewRegistrations() {
   try {
-    const res = await fetch(`${API_URL}/registrations`);
+    const res = await fetch(`${BASE_URL}/registrations`);
     const registrations = await res.json();
 
     const list = document.getElementById("registrationList");
@@ -103,7 +102,7 @@ async function viewRegistrations() {
 // View Students
 async function viewStudents() {
   try {
-    const res = await fetch(`${API_URL}/view-students`);
+    const res = await fetch(`${BASE_URL}/view-students`);
     const students = await res.json();
 
     const list = document.getElementById("studentList");
