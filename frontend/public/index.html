@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Registration</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🎓 Course Registration System</h1>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Register Student -->
+    <section class="container card">
+      <h2>Register Student</h2>
+      <input type="text" id="name" placeholder="Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <div class="buttons">
+        <button onclick="registerStudent()">Register</button>
+        <button onclick="clearRegisterForm()">Reset</button>
+      </div>
+    </section>
+
+    <!-- Available Courses -->
+    <section class="container card">
+      <h2>Available Courses</h2>
+      <button onclick="loadCourses()">Show Courses</button>
+      <ul id="courseList"></ul>
+    </section>
+
+    <!-- Enroll in Course -->
+    <section class="container card">
+      <h2>Enroll in Course</h2>
+      <input type="number" id="student_id" placeholder="Student ID" required>
+      <input type="number" id="course_id" placeholder="Course ID" required>
+      <div class="buttons">
+        <button onclick="enrollCourse()">Enroll</button>
+        <button onclick="clearEnrollForm()">Reset</button>
+      </div>
+    </section>
+
+    <!-- View All Registrations -->
+    <section class="container card">
+      <h2>All Registrations</h2>
+      <button onclick="viewRegistrations()">View Registrations</button>
+      <ul id="registrationList"></ul>
+    </section>
+
+    <!-- View All Students -->
+    <section class="container card">
+      <h2>All Students</h2>
+      <button onclick="viewStudents()">View Students</button>
+      <ul id="studentList"></ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Course Registration System</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function clearRegisterForm() {
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    function clearEnrollForm() {
+      document.getElementById('student_id').value = '';
+      document.getElementById('course_id').value = '';
+    }
+  </script>
+</body>
+</html>
