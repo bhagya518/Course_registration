@@ -24,3 +24,10 @@ build/
 
 # Ignore local Docker volumes (optional, not the Dockerfiles themselves)
 volumes/
+
+backend/Dockerfile
+frontend/Dockerfile
+
+docker-compose.yml
+
+nginx.conf
