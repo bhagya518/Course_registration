@@ -10,23 +10,25 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-
+// MySQL pool (no need to call connect)
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
-connection.connect((err) => {
+// Optional: test connection
+db.getConnection((err, connection) => {
   if (err) {
     console.error("DB connection failed:", err);
   } else {
     console.log("DB connected successfully!");
+    connection.release(); // release back to pool
   }
 });
 
@@ -34,7 +36,6 @@ connection.connect((err) => {
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
   const sql = "INSERT INTO students (name, email, password) VALUES (?, ?, ?)";
-
   db.query(sql, [name, email, password], (err) => {
     if (err) return res.status(500).json({ error: err });
     res.json({ message: "Student registered successfully!" });
@@ -53,7 +54,6 @@ app.get("/courses", (req, res) => {
 app.post("/enroll", (req, res) => {
   const { student_id, course_id } = req.body;
   const sql = "INSERT INTO registrations (student_id, course_id) VALUES (?, ?)";
-
   db.query(sql, [student_id, course_id], (err) => {
     if (err) return res.status(500).json({ error: err });
     res.json({ message: "Enrolled successfully!" });
@@ -67,7 +67,6 @@ app.get("/registrations", (req, res) => {
     FROM registrations r
     JOIN students s ON r.student_id = s.id
     JOIN courses c ON r.course_id = c.id`;
-
   db.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err });
     res.json(results);
