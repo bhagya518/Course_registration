@@ -1,18 +1,18 @@
-# Use Node.js official image
+# backend/Dockerfile
 FROM node:20
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy all backend files
+# Copy source code
 COPY . .
 
-# Expose backend port
+# Expose backend port (example: 4000)
 EXPOSE 4000
 
-# Start backend
+# Start the backend
 CMD ["node", "service.js"]

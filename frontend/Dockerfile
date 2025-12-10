@@ -1,14 +1,13 @@
+# frontend/Dockerfile
 FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
 
-# Remove default config
-RUN rm /etc/nginx/conf.d/default.conf
+# Copy built frontend files to nginx html folder
+COPY public /usr/share/nginx/html
 
-# Copy custom server block config
+# Copy custom nginx configuration if any
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy static files
-COPY public/ /usr/share/nginx/html
+# Expose port 80
+EXPOSE 80
 
-# Start Nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]

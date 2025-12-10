@@ -15,6 +15,10 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+frontend/Dockerfile
+backend/Dockerfile
+course-registration.yaml
+
 # VSCode settings
 .vscode/
 
