@@ -3,78 +3,76 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "public"))); // serve frontend
+app.use(express.static(path.join(__dirname, "public")));
 
-// Database Connection
-
-const db = mysql.createConnection({
+// ⭐ Use a POOL instead of createConnection()
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT
+  port: process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-
-db.connect(err => {
-  if (err) throw err;
-  console.log("✅ MySQL Connected");
-});
-
-// Register a new student
+// Register student
 app.post("/register", (req, res) => {
   const { name, email, password } = req.body;
   const sql = "INSERT INTO students (name, email, password) VALUES (?, ?, ?)";
+
   db.query(sql, [name, email, password], (err) => {
-    if (err) return res.status(500).send("Error registering student");
-    res.send("🎉 Student registered successfully!");
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: "Student registered successfully!" });
   });
 });
 
-// Get all courses
+// Get courses
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses", (err, results) => {
-    if (err) return res.status(500).send("Error fetching courses");
+    if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 });
 
-// Enroll in a course
+// Enroll student
 app.post("/enroll", (req, res) => {
   const { student_id, course_id } = req.body;
   const sql = "INSERT INTO registrations (student_id, course_id) VALUES (?, ?)";
+
   db.query(sql, [student_id, course_id], (err) => {
-    if (err) return res.status(500).send("Error enrolling in course");
-    res.send("✅ Enrolled successfully!");
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: "Enrolled successfully!" });
   });
 });
 
-// View all registrations
+// Get registrations
 app.get("/registrations", (req, res) => {
   const sql = `
     SELECT s.name AS student_name, c.course_name 
     FROM registrations r
     JOIN students s ON r.student_id = s.id
     JOIN courses c ON r.course_id = c.id`;
+
   db.query(sql, (err, results) => {
-    if (err) return res.status(500).send("Error fetching registrations");
+    if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 });
 
-// Add this new route to view students
-app.get("/view-students", async (req, res) => {
+// Get students
+app.get("/view-students", (req, res) => {
   db.query("SELECT * FROM students", (err, results) => {
-    if (err) return res.status(500).send(err);
+    if (err) return res.status(500).json({ error: err });
     res.json(results);
   });
 });
 
-
-const PORT = 4000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
