@@ -28,9 +28,10 @@ db.getConnection((err, connection) => {
     console.error("DB connection failed:", err);
   } else {
     console.log("DB connected successfully!");
-    connection.release(); // release back to pool
+    connection.release();
   }
 });
+
 
 // Register student
 app.post("/register", (req, res) => {
